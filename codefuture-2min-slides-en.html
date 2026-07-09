@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeFuture — 2-Minute Pitch</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #080C12;
+    --surface: #111720;
+    --text: #E8EAED;
+    --text-muted: #8B929A;
+    --text-dim: #5A6068;
+    --border: rgba(255,255,255,0.06);
+    --teal: #5DCAA5;
+    --teal-bg: rgba(93,202,165,0.08);
+    --teal-border: rgba(93,202,165,0.2);
+    --purple: #AFA9EC;
+    --purple-bg: rgba(175,169,236,0.08);
+    --purple-border: rgba(175,169,236,0.2);
+    --coral: #F0997B;
+    --coral-bg: rgba(240,153,123,0.08);
+    --coral-border: rgba(240,153,123,0.2);
+    --amber: #FAC775;
+    --amber-bg: rgba(250,199,117,0.08);
+    --amber-border: rgba(250,199,117,0.2);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--teal); z-index: 100; transition: width 0.4s ease;
+  }
+
+  #counter {
+    position: fixed; bottom: 24px; right: 32px;
+    font-size: 13px; color: var(--text-dim);
+    font-variant-numeric: tabular-nums; z-index: 100;
+  }
+
+  #hint {
+    position: fixed; bottom: 24px; left: 32px;
+    font-size: 12px; color: var(--text-dim); z-index: 100;
+    opacity: 0; transition: opacity 0.6s;
+    display: flex; gap: 16px;
+  }
+  #hint span { background: rgba(255,255,255,0.06); border-radius: 4px; padding: 3px 8px; }
+
+  .nav-zone {
+    position: fixed; top: 0; bottom: 0; width: 80px; z-index: 99;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .nav-zone:hover { opacity: 1; }
+  .nav-prev { left: 0; }
+  .nav-next { right: 0; }
+  .nav-arrow {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--text-muted);
+  }
+
+  .slide {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.45s ease;
+    padding: 60px;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .slide-inner {
+    width: 100%; max-width: 900px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .slide-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--teal); margin-bottom: 32px; font-weight: 500;
+  }
+  .slide-title {
+    font-size: 48px; font-weight: 700; line-height: 1.2;
+    text-align: center; margin-bottom: 16px;
+  }
+  .slide-subtitle {
+    font-size: 22px; color: var(--text-muted); text-align: center;
+    font-weight: 400; line-height: 1.5; max-width: 640px;
+  }
+
+  .card-grid {
+    display: grid; gap: 16px; width: 100%;
+  }
+  .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; text-align: left;
+  }
+  .card-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .card-desc { font-size: 15px; color: var(--text-muted); line-height: 1.5; }
+
+  .card.c-teal { border-color: var(--teal-border); background: var(--teal-bg); }
+  .card.c-teal .card-title { color: var(--teal); }
+  .card.c-purple { border-color: var(--purple-border); background: var(--purple-bg); }
+  .card.c-purple .card-title { color: var(--purple); }
+  .card.c-coral { border-color: var(--coral-border); background: var(--coral-bg); }
+  .card.c-coral .card-title { color: var(--coral); }
+  .card.c-amber { border-color: var(--amber-border); background: var(--amber-bg); }
+  .card.c-amber .card-title { color: var(--amber); }
+
+  .metric-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; width: 100%; max-width: 700px;
+    margin-bottom: 16px;
+  }
+  .metric {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; text-align: center;
+  }
+  .metric-value {
+    font-size: 42px; font-weight: 700; color: var(--teal); margin-bottom: 8px;
+  }
+  .metric-label { font-size: 14px; color: var(--text-muted); }
+
+  .big-text {
+    font-size: 32px; font-weight: 600; line-height: 1.4;
+    text-align: center; margin-bottom: 20px; max-width: 700px;
+  }
+  .big-text em { font-style: normal; color: var(--teal); }
+
+  .tag {
+    display: inline-block; padding: 4px 12px; border-radius: 20px;
+    font-size: 13px; font-weight: 500;
+    background: var(--teal-bg); color: var(--teal);
+    border: 1px solid var(--teal-border);
+  }
+  .tag.c-purple { background: var(--purple-bg); color: var(--purple); border-color: var(--purple-border); }
+  .tag.c-coral { background: var(--coral-bg); color: var(--coral); border-color: var(--coral-border); }
+
+  @media (max-width: 700px) {
+    .slide { padding: 28px; }
+    .slide-title { font-size: 32px; }
+    .slide-subtitle { font-size: 17px; }
+    .card-grid.cols-2 { grid-template-columns: 1fr; }
+    .big-text { font-size: 22px; }
+    .metric-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="counter"></div>
+<div id="hint">
+  <span>&larr; &rarr;</span> Navigate
+</div>
+
+<div class="nav-zone nav-prev" onclick="prevSlide()">
+  <div class="nav-arrow">&larr;</div>
+</div>
+<div class="nav-zone nav-next" onclick="nextSlide()">
+  <div class="nav-arrow">&rarr;</div>
+</div>
+
+<!-- ===== SLIDE 1: Title ===== -->
+<div class="slide active">
+  <div class="slide-inner" style="justify-content: center;">
+    <div style="text-align: center;">
+      <h1 style="font-size: 56px; font-weight: 800; background: linear-gradient(135deg, var(--teal), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px;">CodeFuture</h1>
+      <p style="font-size: 18px; color: var(--text-muted); margin-bottom: 60px;">AI-powered coding learning assistant</p>
+      <div style="width: 60px; height: 2px; background: var(--border); margin: 0 auto 48px;"></div>
+      <p style="font-size: 24px; color: var(--text); font-weight: 600;">Li ZHANG</p>
+      <p style="font-size: 14px; color: var(--text-dim); margin-top: 8px;">Founder &amp; CEO · 10 years full-stack · 2 years teaching</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: Positioning ===== -->
+<div class="slide">
+  <div class="slide-inner">
+    <p class="slide-label">One-Liner</p>
+    <div class="big-text" style="margin-top: 40px; line-height: 1.6;">
+      CodeFuture is an <em>AI coding mentor</em> for students.<br/>It guides students to think through <em>coding problems step by step.</em><br/>It does not simply give them the answer.<br/>So it is not another chatbot wrapper &mdash;<br/>but a <em>trusted practice system</em> for coding education.
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: Traction ===== -->
+<div class="slide">
+  <div class="slide-inner">
+    <p class="slide-label">Validated</p>
+    <h2 class="slide-title" style="margin-bottom: 40px;">Demand Proven. Product Live.</h2>
+
+    <!-- Coaching validation -->
+    <div style="display: flex; gap: 16px; width: 100%; margin-bottom: 16px;">
+      <div class="card c-coral" style="flex: 1; text-align: center; padding: 28px;">
+        <div style="font-size: 40px; font-weight: 700; color: var(--coral); margin-bottom: 8px;">5</div>
+        <div style="font-size: 15px; color: var(--text-muted); line-height: 1.5;">paying students<br/>2 years · zero churn</div>
+      </div>
+      <div class="card c-teal" style="flex: 1; text-align: center; padding: 28px;">
+        <div style="font-size: 40px; font-weight: 700; color: var(--teal); margin-bottom: 8px;">375h</div>
+        <div style="font-size: 15px; color: var(--text-muted); line-height: 1.5;">class hours taught<br/><span style="font-size: 13px; color: var(--text-dim);">2 years of coaching</span></div>
+      </div>
+    </div>
+    <div class="card c-amber" style="width: 100%; text-align: left; padding: 24px; margin-bottom: 16px;">
+      <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+        &ldquo;Students solve problems faster. They think more independently. I spend less time repeating the same Q&amp;A every class.&rdquo;
+      </div>
+      <div style="font-size: 12px; color: var(--text-dim); margin-top: 8px;">&mdash; teacher feedback</div>
+    </div>
+
+    <!-- Platform launch -->
+    <div class="card c-purple" style="width: 100%; text-align: center; padding: 28px;">
+      <div style="font-size: 16px; font-weight: 600; color: var(--purple); margin-bottom: 8px;">Live June 2026</div>
+      <div style="font-size: 15px; color: var(--text-muted); line-height: 1.5;">gray release with 3 of 5 students &middot; <span style="color: var(--teal); font-weight: 600; font-size: 18px;">200+</span> est. students in robotics summer camp pipeline</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: Moat ===== -->
+<div class="slide">
+  <div class="slide-inner">
+    <p class="slide-label">Moat</p>
+    <h2 class="slide-title" style="margin-bottom: 48px;">Why We Win</h2>
+    <div class="card-grid cols-2" style="max-width: 740px;">
+      <div class="card c-coral">
+        <div class="card-title">Deterministic judging engine</div>
+        <div class="card-desc">Correctness is handled by an independent engine. AI never judges right from wrong &mdash; immune to hallucination. Built for China's regulatory regime &mdash; which makes it exportable by design: the same architecture keeps core assessment outside the EU AI Act's high-risk category.</div>
+      </div>
+      <div class="card c-purple">
+        <div class="card-title">Solutions never leak</div>
+        <div class="card-desc">Architecturally prevented from outputting full solutions, continuously verified. A coach&rsquo;s most valuable asset is their problem set and methodology &mdash; we protect both. This is why institutions are willing to pay.</div>
+      </div>
+      <div class="card c-teal">
+        <div class="card-title">800 problems · 21 modules</div>
+        <div class="card-desc">A structured C++ knowledge graph drives precision practice. Not a chatbot wearing a problem bank &mdash; curriculum depth and coverage are the real moat.</div>
+      </div>
+      <div class="card c-amber">
+        <div class="card-title">Adaptive learning paths</div>
+        <div class="card-desc">Every student follows a personalized trajectory based on their level, weak points, and learning pace. The system adapts as they progress &mdash; no two students see the same path.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: Market ===== -->
+<div class="slide">
+  <div class="slide-inner">
+    <p class="slide-label">Market</p>
+    <h2 class="slide-title" style="margin-bottom: 40px;">A Massive, Growing Market</h2>
+    <div class="metric-grid" style="max-width: 780px;">
+      <div class="metric">
+        <div class="metric-value">$10.6B</div>
+        <div class="metric-label">Global AI Education<br/><span style="font-size: 12px; color: var(--text-dim);">2026 · 40.9% CAGR</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">$1.6B</div>
+        <div class="metric-label">US Coding Bootcamp<br/><span style="font-size: 12px; color: var(--text-dim);">2025 · 17.3% CAGR</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">$190M</div>
+        <div class="metric-label">UK Online Kids Coding<br/><span style="font-size: 12px; color: var(--text-dim);">2026 · 12–15% growth</span></div>
+      </div>
+    </div>
+    <p style="font-size: 14px; color: var(--text-muted); margin-top: 36px; text-align: center; line-height: 1.6; max-width: 600px;">
+      China already has 12M+ competitive programming students.<br/>Three massive markets, one engine.
+    </p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: Goal ===== -->
+<div class="slide">
+  <div class="slide-inner" style="justify-content: center;">
+    <p class="slide-label">Our Goal</p>
+    <div class="big-text" style="margin-top: 40px; line-height: 1.6; max-width: 720px;">
+      Our goal is simple.<br/><br/>
+      We want to make <em>high-quality coding guidance</em><br/>more <em>efficient</em> and <em>affordable</em><br/>for every child who wants to learn.
+    </div>
+  </div>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function updateUI() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+
+    const hint = document.getElementById('hint');
+    hint.style.opacity = '1';
+    clearTimeout(hint._timeout);
+    hint._timeout = setTimeout(() => { hint.style.opacity = '0'; }, 5000);
+  }
+
+  function nextSlide() { if (current < total - 1) { current++; updateUI(); } }
+  function prevSlide() { if (current > 0) { current--; updateUI(); } }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault(); nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); prevSlide();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.nav-zone') || e.target.closest('.nav-arrow')) return;
+    const x = e.clientX;
+    if (x > window.innerWidth * 0.8) nextSlide();
+    else if (x < window.innerWidth * 0.2) prevSlide();
+  });
+
+  updateUI();
+  setTimeout(() => { document.getElementById('hint').style.opacity = '1'; }, 500);
+</script>
+
+</body>
+</html>
